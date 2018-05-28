@@ -8,28 +8,27 @@ from   keras.models import Sequential
 from   keras.layers import Dense,Dropout,GRU,Reshape
 from   keras.layers.normalization import BatchNormalization
 
-file_name = 'dataset.csv'
+file_name = 'data-price.csv'
 net = None
 wait_time = 530
 
-def buildNet(w_init="glorot_uniform",act="tanh"):
-    global net
-    print("Building net..",end="")
-    net = Sequential()
-    net.add(Dense(12,kernel_initializer=w_init,input_dim=12,activation='linear'))
-    net.add(Reshape((1,12)))
-    net.add(BatchNormalization())
-    net.add(GRU(40,kernel_initializer=w_init,activation=act,return_sequences=True))
-    net.add(Dropout(0.4))
-    net.add(GRU(70,kernel_initializer=w_init,activation=act,return_sequences=True))
-    net.add(Dropout(0.3))
-    net.add(GRU(70,kernel_initializer=w_init,activation=act,return_sequences=True))
-    net.add(Dropout(0.4))
-    net.add(GRU(40,kernel_initializer=w_init,activation=act,return_sequences=False))
-    net.add(Dropout(0.4))
-    net.add(Dense(1,kernel_initializer=w_init,activation='linear'))
-    net.compile(optimizer='nadam',loss='mse')
-    print("done!")
+def build_net(w_init="glorot_uniform",act="tanh"):
+    print("Building net..", end="")
+    model = Sequential()
+    model.add(Dense(12,kernel_initializer=w_init,input_dim=12,activation='linear'))
+    model.add(Reshape((1,12)))
+    model.add(BatchNormalization())
+    model.add(GRU(40,kernel_initializer=w_init,activation=act,return_sequences=True))
+    model.add(Dropout(0.4))
+    model.add(GRU(70,kernel_initializer=w_init,activation=act,return_sequences=True))
+    model.add(Dropout(0.3))
+    model.add(GRU(70,kernel_initializer=w_init,activation=act,return_sequences=True))
+    model.add(Dropout(0.4))
+    model.add(GRU(40,kernel_initializer=w_init,activation=act,return_sequences=False))
+    model.add(Dropout(0.4))
+    model.add(Dense(1,kernel_initializer=w_init,activation='linear'))
+    model.compile(optimizer='nadam',loss='mse')
+    return model
 
 def chart(real,predicted,show=True):
     plt.plot(real,color='g')
@@ -64,7 +63,8 @@ if __name__ == '__main__':
 
 
     #Assembling Net:
-    buildNet()
+    net = build_net()
+
     #data loading:
     file_name = args.run if args.run is not None else args.train
     print("Loading data...",end="")
